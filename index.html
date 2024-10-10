@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flappy Bird</title>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            background-color: #70c5ce;
+        }
+
+        #game-container {
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        #bird {
+            position: absolute;
+            width: 40px;
+            height: 40px;
+            background-color: yellow;
+            border-radius: 50%;
+            top: 50%;
+            left: 20%;
+            transition: top 0.1s;
+        }
+
+        #pipe, #pipe2 {
+            position: absolute;
+            width: 60px;
+            background-color: green;
+            bottom: 0;
+            animation: movePipe 2s infinite linear;
+        }
+
+        #pipe {
+            height: 200px;
+            left: 100%;
+        }
+
+        #pipe2 {
+            height: 150px;
+            left: 150%;
+        }
+
+        @keyframes movePipe {
+            from {
+                left: 100%;
+            }
+            to {
+                left: -60px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="game-container">
+        <div id="bird"></div>
+        <div id="pipe"></div>
+        <div id="pipe2"></div>
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const bird = document.getElementById('bird');
+            const gameContainer = document.getElementById('game-container');
+            let birdTop = gameContainer.clientHeight / 2;
+            let isGameOver = false;
+
+            function startGame() {
+                document.addEventListener('keydown', jump);
+                setInterval(applyGravity, 20);
+                setInterval(checkCollision, 20);
+            }
+
+            function jump() {
+                if (!isGameOver) {
+                    birdTop -= 50;
+                    bird.style.top = birdTop + 'px';
+                }
+            }
+
+            function applyGravity() {
+                if (!isGameOver) {
+                    birdTop += 2;
+                    bird.style.top = birdTop + 'px';
+                }
+            }
+
+            function checkCollision() {
+                const pipes = document.querySelectorAll('#pipe, #pipe2');
+                pipes.forEach(pipe => {
+                    const pipeRect = pipe.getBoundingClientRect();
+                    const birdRect = bird.getBoundingClientRect();
+                    if (
+                        birdRect.right > pipeRect.left &&
+                        birdRect.left < pipeRect.right &&
+                        (birdRect.top < pipeRect.bottom || birdRect.bottom > pipeRect.top)
+                    ) {
+                        endGame();
+                    }
+                });
+
+                if (birdTop >= gameContainer.clientHeight - bird.clientHeight || birdTop <= 0) {
+                    endGame();
+                }
+            }
+
+            function endGame() {
+                isGameOver = true;
+                alert('Game Over!');
+                document.removeEventListener('keydown', jump);
+            }
+
+            startGame();
+        });
+    </script>
+</body>
+</html>

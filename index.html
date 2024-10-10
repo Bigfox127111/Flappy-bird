@@ -39,20 +39,21 @@
 
         #pipe {
             height: 200px;
-            left: 100%;
+            right: 0;
         }
 
         #pipe2 {
             height: 150px;
-            left: 150%;
+            right: 0;
+            top: 0;
         }
 
         @keyframes movePipe {
             from {
-                left: 100%;
+                right: -60px;
             }
             to {
-                left: -60px;
+                right: 100vw;
             }
         }
     </style>
@@ -67,7 +68,7 @@
         document.addEventListener('DOMContentLoaded', () => {
             const bird = document.getElementById('bird');
             const gameContainer = document.getElementById('game-container');
-            let birdTop = gameContainer.clientHeight / 2;
+            let birdTop = bird.offsetTop;
             let isGameOver = false;
 
             function startGame() {
@@ -103,10 +104,6 @@
                         endGame();
                     }
                 });
-
-                if (birdTop >= gameContainer.clientHeight - bird.clientHeight || birdTop <= 0) {
-                    endGame();
-                }
             }
 
             function endGame() {
